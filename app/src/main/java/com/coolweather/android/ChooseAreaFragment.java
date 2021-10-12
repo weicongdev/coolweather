@@ -1,6 +1,7 @@
 package com.coolweather.android;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 
-import org.jetbrains.annotations.NotNull;
+
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
@@ -75,10 +75,8 @@ public class ChooseAreaFragment extends Fragment {
      */
     private int currentLevel;
 
-    @Nullable
-    @org.jetbrains.annotations.Nullable
     @Override
-    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.choose_area,container,false);
         titleText = (TextView)view.findViewById(R.id.title_text);
         backButton = (Button)view.findViewById(R.id.back_button);
@@ -89,7 +87,7 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,6 +98,12 @@ public class ChooseAreaFragment extends Fragment {
                 }else if(currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if(currentLevel == LEVEL_COUNTY){
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -188,8 +192,8 @@ public class ChooseAreaFragment extends Fragment {
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                //通过reunOnUiThread()方法回到主线程处理逻辑
+            public void onFailure(Call call,IOException e) {
+                //通过runOnUiThread()方法回到主线程处理逻辑
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
