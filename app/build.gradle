@@ -31,6 +31,7 @@ android {
 dependencies {
 
     implementation fileTree(dir: 'libs',includes: ['*.jar'])
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'org.litepal.android:core:1.3.2'
     implementation 'com.google.code.gson:gson:2.8.8'
